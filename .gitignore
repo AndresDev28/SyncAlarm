@@ -1,0 +1,5 @@
+# Local tool artifacts (regenerable; do not commit)
+.codegraph/
+
+# Expanded Android/Gradle gitignore lands in PR 1 (scaffold-build, T1.5):
+# .gradle/, build/, local.properties, *.iml, .idea/, .kotlin/, captures/
