@@ -1,0 +1,24 @@
+# -----------------------------------------------------------------------------
+# local.properties.example — bootstrap-android-scaffold, PR 1 (scaffold-build).
+#
+# This file is a TEMPLATE. Copy it to `local.properties` at the repo root and
+# replace the placeholder with the absolute path to your Android SDK install.
+#
+#   cp local.properties.example local.properties
+#   $EDITOR local.properties
+#
+# `local.properties` itself is in `.gitignore` (machine-specific paths never
+# belong in version control). Android Studio writes this file automatically on
+# first sync, but committing the example lets:
+#
+#   * CI pick up the SDK path from `ANDROID_HOME` / `ANDROID_SDK_ROOT` instead
+#     of relying on a checked-in `local.properties`.
+#   * New contributors bootstrap a working build without an IDE round-trip.
+# -----------------------------------------------------------------------------
+
+## Path to the Android SDK install.
+## Examples per platform (replace with your actual install path):
+##   macOS:   /Users/<you>/Library/Android/sdk
+##   Linux:   /home/<you>/Android/Sdk
+##   Windows: C\:\\Users\\<you>\\AppData\\Local\\Android\\Sdk
+sdk.dir=/path/to/Android/sdk
