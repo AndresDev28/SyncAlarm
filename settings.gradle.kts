@@ -32,6 +32,6 @@ dependencyResolutionManagement {
 rootProject.name = "SyncAlarm"
 
 // Module includes — uncomment when the matching directory lands:
+include(":domain")   // PR 2 (scaffold-domain): kotlin("jvm"), zero android.* imports
 // include(":app")      // PR 3 (scaffold-app): com.android.application + Hilt + Compose
-// include(":domain")   // PR 2 (scaffold-domain): kotlin("jvm"), zero android.* imports
 // include(":data")      // PR 3 (scaffold-app): com.android.library + KSP + project(":domain")

@@ -7,13 +7,13 @@ schema: spec-driven
 context: |
   Project: SyncAlarm (Android native, Kotlin).
   Architecture: Clean Architecture + MVVM (Domain modules isolated from Android
-  to enable TDD once Gradle/JUnit land).
+  to enable TDD; :domain is pure Kotlin JVM module per bootstrap-android-scaffold).
   Background: WorkManager (calendar scan) + AlarmManager (exact alarms).
-  Persistence: Room or DataStore (TBD by sdd-design phase).
+  Persistence: Room or DataStore (TBD by a follow-up sdd-design change).
   Integrations: Google Calendar API (OAuth2 PKCE), Jetpack Security/KeyStore.
-  Testing: NOT configured — strict_tdd is false until a Gradle + JUnit scaffold
-  is added. PRD §6 plans a TDD-pure domain layer, so strict_tdd should be
-  flipped to true during sdd-design once the test runner is in place.
+  Testing: CONFIGURED — strict_tdd is true with JUnit 5 + MockK + Turbine +
+  AssertJ on :domain (sanity tests pass via `./gradlew :domain:test`).
+  :app and :data land in PR 3 of bootstrap-android-scaffold.
   Artifact store: engram + openspec (hybrid / "both").
   Repo: https://github.com/AndresDev28/SyncAlarm.git (inner SyncAlarm/ is the
   git root; the outer sync-alarm/ wrapper carries opencode.json and .atl/).
@@ -46,12 +46,12 @@ rules:
       - Mirror the PRD's Spanish domain vocabulary in code identifiers only
         when there is no clear English equivalent (alarm, calendar, rule,
         offset all have standard English terms).
-    tdd: false
-    tdd_command: ""
-    test_command: ""
+    tdd: true
+    tdd_command: "./gradlew :domain:test"
+    test_command: "./gradlew test"
   verify:
-    test_command: ""
-    build_command: ""
+    test_command: "./gradlew :domain:test"
+    build_command: "./gradlew :domain:test"
     coverage_threshold: 0
   archive:
     - Warn before merging any delta that removes a SCHEDULE_EXACT_ALARM or
@@ -60,14 +60,14 @@ rules:
 # Per-project testing capabilities (kept in sync with the separate
 # sdd/sync-alarm/testing-capabilities Engram observation).
 testing:
-  strict_tdd: false
+  strict_tdd: true
   detected: 2026-08-05
   runner:
-    available: false
-    command: ""
-    framework: ""
+    available: true
+    command: "./gradlew test"
+    framework: "junit5"
   layers:
-    unit: { available: false, tool: "" }
+    unit: { available: true, tool: "junit5 + mockk + turbine + assertj" }
     integration: { available: false, tool: "" }
     e2e: { available: false, tool: "" }
   coverage:
@@ -78,7 +78,11 @@ testing:
     type_checker: { available: false, command: "" }
     formatter: { available: false, command: "" }
   rationale: |
-    No build.gradle.kts, no Kotlin source, no test dependencies detected.
-    strict_tdd disabled per sdd-init decision gate (no test runner). Re-enable
-    during sdd-design once Gradle + JUnit + (optionally) MockK or Turbine are
-    declared as test dependencies in the scaffold task.
+    :domain is a pure-Kotlin JVM module wired with JUnit 5 (BOM 5.11.0) +
+    MockK 1.13.13 + Turbine 1.2.0 + AssertJ 3.26.3 + kotlinx-coroutines-test
+    1.9.0. Sanity tests (`JupiterSanityTest`, `MockKSanityTest`,
+    `TurbineSanityTest`, `AssertJSanityTest`) all pass via `./gradlew
+    :domain:test`; module has zero Android dependencies per spec
+    module-boundaries. :app + :data land in PR 3 of bootstrap-android-scaffold
+    (the runner command will keep working as more modules wire in). Coverage
+    tooling (JaCoCo) and Compose UI tests wire in a follow-up change.
