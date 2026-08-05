@@ -60,7 +60,7 @@ rules:
 # Per-project testing capabilities (kept in sync with the separate
 # sdd/sync-alarm/testing-capabilities Engram observation).
 testing:
-  strict_tdd: false
+  strict_tdd: true
   detected: 2026-08-05
   runner:
     available: false
