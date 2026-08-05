@@ -1,5 +1,31 @@
-# Local tool artifacts (regenerable; do not commit)
+# --- Local tool artifacts (regenerable; do not commit) ---
 .codegraph/
 
-# Expanded Android/Gradle gitignore lands in PR 1 (scaffold-build, T1.5):
-# .gradle/, build/, local.properties, *.iml, .idea/, .kotlin/, captures/
+# --- Gradle ---
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+build/
+**/build/
+
+# --- Android Studio / IntelliJ ---
+*.iml
+.idea/
+.kotlin/
+captures/
+.navigation/
+local.properties
+.externalNativeBuild/
+.cxx/
+
+# --- Build outputs (APKs / bundles / intermediate) ---
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
