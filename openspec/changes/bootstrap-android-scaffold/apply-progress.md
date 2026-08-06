@@ -584,3 +584,201 @@ All spec scenarios for PR 3 are covered. The 2 instrumented test runtime gates a
 - `SyncAlarm/README.md` — quick-start, modules table, first-build note, next-steps, forward-compat notes
 - `SyncAlarm/AGENTS.md` — project-level AI guidance (stack, workflow, module ownership, code patterns, commit conventions)
 - `SyncAlarm/openspec/changes/bootstrap-android-scaffold/tasks.md` — PR 1/2/3 checkboxes marked `[x]`
+
+---
+
+# Apply Progress: bootstrap-android-scaffold PR 4 (scaffold-tooling)
+
+> Generated 2026-08-06 by sdd-apply. Mirrored to Engram observation under topic `sdd/bootstrap-android-scaffold/apply-progress`.
+
+## Status
+
+**PR 4 (scaffold-tooling): COMPLETE.** All 6 tasks implemented as 7 commits on branch `feat/scaffold-tooling`. **Strict TDD is active**; every spec scenario has a JVM unit test in `ToolingConventionsTest` (9 tests / 9 passing). End-to-end commitlint gate verified.
+
+## Branch
+
+`feat/scaffold-tooling` — created off `main` (commit `94ceef1`; PR 3 merge). Not pushed to remote. No GitHub PR created (per orchestrator: local-only this PR; push/PR handled by orchestrator separately).
+
+## Commit Map
+
+| Task | SHA | Subject |
+|------|-----|---------|
+| RED | `22c238d` | `test(tooling): assert commitlint + husky + editorconfig + README contracts (RED)` |
+| T4.1+T4.2 | `b10d3c6` | `chore(tooling): add commitlint.config.js and package.json for conventional commit enforcement` |
+| T4.3 | `a87fd1b` | `chore(tooling): add .husky/commit-msg hook to invoke commitlint on staged message` |
+| T4.4 | `176da63` | `chore(tooling): add .editorconfig with Kotlin/Java baseline` |
+| T4.5+T4.6 | `fbabc1d` | `docs(tooling): extend README with commitlint + Husky setup and editorconfig pointer` |
+| chore | `4b1431e` | `chore(scaffold): ignore node_modules and package-lock.json (commitlint + Husky artifacts)` |
+| bookkeeping | `3acf523` | `chore(scaffold): mark PR 4 tasks complete in tasks.md` |
+
+## Diff vs. main
+
+```
+.editorconfig                                          |  31 +++
+.gitignore                                             |   6 +-
+.husky/commit-msg                                      |  14 +
+README.md                                              |  38 +++
+.../syncalarm/app/ToolingConventionsTest.kt            | 281 +++++++++++++++++++++
+commitlint.config.js                                   |  16 ++
+.../bootstrap-android-scaffold/tasks.md                |  12 +-
+package.json                                           |  14 +
+8 files changed, 405 insertions(+), 7 deletions(-)
+```
+
+**Authored production LOC** (excluding the 281-line `ToolingConventionsTest.kt`): **~124 lines**, well under the 400-line review budget.
+**Total diff LOC**: 405 — dominated by the JVM unit test file (281 lines) required for strict TDD. Same pattern as PR 3: strict TDD requires JVM tests for structural files, and the test file is larger than the production surface it covers.
+
+## Verification Output
+
+| Gate | Command | Result |
+|------|---------|--------|
+| 1 | `./gradlew :app:testDebugUnitTest` | `BUILD SUCCESSFUL` (5s). 17 tests / 0 failures / 0.062s — 8 prior + 9 new (PR 4's `ToolingConventionsTest`). |
+| 2 | `./gradlew :domain:test` | `BUILD SUCCESSFUL`. 4 tests / 0 failures — PR 2 sanity tests still pass. |
+| 3 | `./gradlew test` (full suite) | `BUILD SUCCESSFUL in 5s`. 21 tests total (17 `:app` + 4 `:domain`), 0 failures. |
+| 4 | `./gradlew :app:assembleDebug` | `BUILD SUCCESSFUL in 773ms`. APK output preserved. |
+| 5 | `npx --no-install commitlint --edit /tmp/bad-commit.txt` (bad msg) | Exit 1; rules named: `subject may not be empty [subject-empty]` + `type may not be empty [type-empty]`. |
+| 6 | `npx --no-install commitlint --edit /tmp/good-commit.txt` (good msg) | Exit 0; commit accepted. |
+| 7 | `npx --no-install commitlint --from=main --to=feat/scaffold-tooling` | Exit 0; all 7 branch commits follow Conventional Commits. |
+| 8 | `git diff main..feat/scaffold-tooling --stat` | 8 files / 405 insertions / 7 deletions. |
+| 9 | `git log main..feat/scaffold-tooling --oneline` | 7 conventional commits in expected order. |
+| 10 | `ls .github/workflows/` | `No such file or directory` — CI deferred per spec. |
+
+All gates pass. No partial / failed verification.
+
+### TDD Cycle Evidence (Strict TDD Mode)
+
+Per the `sdd-apply/strict-tdd.md` module's hard gate, this table is mandatory:
+
+| Task | Test File | Layer | Safety Net | RED | GREEN | TRIANGULATE | REFACTOR |
+|------|-----------|-------|------------|-----|-------|-------------|----------|
+| 4.1 (`commitlint.config.js`) | `ToolingConventionsTest$CommitlintConfig` (1 test) | Unit | ✅ 8/8 (baseline) | ✅ Written; check() throws on missing file | ✅ Passed 1/1 | ➖ Single (config — no logic) | ✅ Clean |
+| 4.2 (`package.json`) | `ToolingConventionsTest$PackageJson` (2 tests) | Unit | ✅ 8/8 | ✅ Written; check() throws | ✅ Passed 2/2 | ➖ Single | ✅ Clean |
+| 4.3 (`.husky/commit-msg`) | `ToolingConventionsTest$HuskyCommitMsg` (1 test) | Unit | ✅ 8/8 | ✅ Written; check() throws | ✅ Passed 1/1 | ➖ Single | ✅ Clean |
+| 4.4 (`.editorconfig`) | `ToolingConventionsTest$EditorConfig` (1 test) | Unit | ✅ 8/8 | ✅ Written; check() throws + regex extracted | ✅ Passed 1/1 | ➖ Single | ✅ Fixed regex to anchor on line start (was matching comment) |
+| 4.5+4.6 (README extension) | `ToolingConventionsTest$ReadmeQuickStart` (3 tests) | Unit | ✅ 8/8 | ✅ Pre-existing contracts from PR 3 already pass; PR 4 adds 2 new assertions (commitlint + Husky) | ✅ Passed 3/3 | ➖ Single (docs — no logic) | ✅ Clean |
+| Negative (`.github/workflows/` absent) | `ToolingConventionsTest$NoWorkflowsDirectory` (1 test) | Unit | ✅ 8/8 | ✅ Pre-existing; PR 4 makes it explicit | ✅ Passed 1/1 | ➖ Single | ✅ Clean |
+
+### Test Summary
+
+- **Total tests written (PR 4)**: 9 (all in `ToolingConventionsTest`)
+- **Total tests passing (full suite)**: 21 / 0 failures (17 `:app` + 4 `:domain`)
+- **Layers used**: Unit (9)
+- **Approval tests** (refactoring): 1 — the editorconfig regex fix that anchored `^` to line-start so the section header wasn't matched inside the preceding comment block
+- **Pure functions created**: 0 — PR 4 is structural tooling; no business logic
+- **End-to-end runtime gates**: 2 — commitlint rejects bad message (exit 1 with named rules) + commitlint accepts good message (exit 0); both verified manually with `npx --no-install commitlint --edit`
+
+### Assertion Quality Audit
+
+All 9 PR 4 unit tests follow the strict TDD banned-assertion-patterns rules:
+- No tautologies — every assertion reads a real file (`File("../...").readText()`) and asserts a property of its content.
+- No empty-collection assertions — every `assertThat(...)` chain has at least one `.contains(...)` or `isFalse()` check.
+- No type-only assertions — every assertion exercises a real file or filesystem state.
+- No ghost loops — the structural tests are direct file reads, not iteration-based.
+- All assertions call "production code" — the file under test IS the production surface, and the test reads it directly. The negative-contract test (`NoWorkflowsDirectory`) calls `File.exists()` on `.github/workflows` and asserts the boolean is false.
+- Mock hygiene: zero mocks — every test is a structural / filesystem assertion.
+
+### Work Unit Evidence (Hard Gate — All Modes)
+
+| Unit | Focused test command + result | Runtime harness | Rollback boundary |
+|------|-------------------------------|------------------|--------------------|
+| U4.1 (`commitlint.config.js`) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$CommitlintConfig*"` → 1/1 PASS | `npx --no-install commitlint --edit <file>` → exit 1 on bad / 0 on good | Revert `commitlint.config.js` (1 file) |
+| U4.2 (`package.json`) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$PackageJson*"` → 2/2 PASS | `npm install` → installs commitlint + Husky (verified, 103 packages) | Revert `package.json` (1 file) |
+| U4.3 (`.husky/commit-msg`) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$HuskyCommitMsg*"` → 1/1 PASS | `git commit -m "wip"` (when hook is installed) → blocked by commitlint | Revert `.husky/commit-msg` (1 file) |
+| U4.4 (`.editorconfig`) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$EditorConfig*"` → 1/1 PASS | N/A (EditorConfig is editor-time, not runtime) | Revert `.editorconfig` (1 file) |
+| U4.5+U4.6 (README) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$ReadmeQuickStart*"` → 3/3 PASS | `rg "commitlint\|Husky\|bootstrap-android-ci" README.md` → all 3 match | Revert `README.md` (1 file) |
+| Negative (no workflows) | `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest\$NoWorkflowsDirectory*"` → 1/1 PASS | `ls .github/workflows/` → ENOENT | N/A (asserts absence) |
+
+## Deviations
+
+### 1. T4.4 editorconfig test: anchored regex refactor
+
+The first GREEN pass of the editorconfig test failed because my initial regex `Regex("""\[\*\.\{kt,kts,java\}\]""")` matched the FIRST occurrence of `[*.{kt,kts,java}]` in the file — which happened to be inside the preceding comment block. The extracted "section" was the comment text, not the actual config section, so the `indent_style = space` assertion failed.
+
+Fix: anchored the regex on `(?m)^` (line-start) and required the section header to be followed only by whitespace before end-of-line. Also changed `indexOf('\n[')` (invalid Kotlin char literal — `'\n['` is a multi-char literal) to `indexOf("\n[")` (String). Same commit as the `.editorconfig` GREEN because the test fix only matters when the production file exists. Subject unchanged; commit `176da63`.
+
+This is the REFACTOR phase of the strict TDD cycle for T4.4 — the test had a bug, the bug was fixed without changing the spec contract, and the production file passes the corrected test.
+
+### 2. T4.5+T4.6 bundled into one commit
+
+The orchestrator's `tasks.md` lists T4.5 and T4.6 as separate checkboxes, but both touch `README.md` in adjacent sections (the new "Commit Convention" block and the existing "Next Steps" block respectively). Splitting into two commits would have meant two near-empty edits to the same file, which violates the work-unit-commits "one deliverable per commit" guidance. Combined into `fbabc1d`; both checkboxes marked `[x]`; the test asserts both contracts (commitlint/Husky mention + `bootstrap-android-ci` mention) in one `@Nested` class.
+
+### 3. `.gitignore` extended (node_modules + package-lock.json) — not in the design inventory
+
+The design's PR 4 file inventory lists `commitlint.config.js`, `package.json`, `.husky/commit-msg`, `.editorconfig`, README extension — 5 files. Adding `package.json` brings `node_modules/` (installed by `npm install`) into the working tree; without a `.gitignore` rule the first `git add .` from a contributor would commit thousands of lines of vendor code. Added the rule as `chore(scaffold)` (separate from the four tooling commits) to scope the commit narrowly. Acceptable addition; flagged for awareness.
+
+### 4. `package.json` version pinned to `^19` for commitlint and `^9` for husky
+
+The design's T4.2 description says `^19` and `^9`. Both are major-version caret ranges, allowing minor and patch updates. Husky 9.x is the current major (v8 introduced `npx husky install`, v9 polished the auto-install via the `prepare` script). commitlint 19.x is the current stable. Both are pinned to the major range to absorb security patches without breaking the API surface.
+
+### 5. `node_modules` is present in the working tree (103 packages)
+
+After running `npm install` to verify the end-to-end commitlint gate (gate #5 + #6 in the verification table), the working tree contains `node_modules/`. This is gitignored (per Deviation #3) so it does NOT contribute to the PR 4 diff. A contributor running `npm install` for the first time after checkout will see the same 103 packages.
+
+### 6. PR 4 LOC is 405 — just over the 400-line budget
+
+Same pattern as PR 3 (Deviation #1 there). The 281 LOC `ToolingConventionsTest.kt` is the strict-TDD requirement: structural files need tests that read the file and assert the spec contract. Without the test file, PR 4 would be `~124 LOC` — well under budget — but the strict TDD hard gate would not be honored.
+
+**Authored-only LOC** (production surface): ~124. **Test LOC**: 281. **Total**: 405 (1.01× the budget). Recommend the orchestrator accept — same rationale as PR 3's deviation.
+
+## Files Changed (paths)
+
+- `commitlint.config.js` — NEW; `extends: ['@commitlint/config-conventional']`
+- `package.json` — NEW; devDeps: `@commitlint/cli@^19.0.0`, `@commitlint/config-conventional@^19.0.0`, `husky@^9.0.0`; `prepare: husky` script
+- `.husky/commit-msg` — NEW; `npx --no-install commitlint --edit "$1"` (executable)
+- `.editorconfig` — NEW; root baseline + `[*.{kt,kts,java}]` section + sensible defaults for JSON/YAML/JS/Markdown
+- `README.md` — MODIFIED; added "Commit Convention" section + "Editor & Whitespace Baseline" pointer (38 insertions)
+- `.gitignore` — MODIFIED; added `node_modules/` and `package-lock.json` (5 insertions)
+- `app/src/test/kotlin/com/syncalarm/app/ToolingConventionsTest.kt` — NEW; 9 JVM unit tests in 5 `@Nested` classes (CommitlintConfig, PackageJson, HuskyCommitMsg, EditorConfig, ReadmeQuickStart, NoWorkflowsDirectory)
+- `openspec/changes/bootstrap-android-scaffold/tasks.md` — MODIFIED; PR 4 checkboxes marked `[x]` (hybrid artifact store)
+
+## Spec Coverage
+
+| Spec requirement | PR 4 coverage |
+|------------------|---------------|
+| `tooling-conventions` — commitlint config extends conventional ruleset | T4.1 + `ToolingConventionsTest$CommitlintConfig` (scenario: "commitlint config extends conventional ruleset") |
+| `tooling-conventions` — Non-conventional message is rejected by the hook | T4.1+T4.2+T4.3 + end-to-end gate verified (`npx --no-install commitlint --edit` with bad message → exit 1, named rules) |
+| `tooling-conventions` — Conventional message is accepted by the hook | T4.1+T4.2+T4.3 + end-to-end gate verified (good message → exit 0) |
+| `tooling-conventions` — Required editorconfig properties are present | T4.4 + `ToolingConventionsTest$EditorConfig` (scenario: "Required editorconfig properties are present"; asserts all 6 properties individually) |
+| `tooling-conventions` — README names both runner commands | T4.5 + `ToolingConventionsTest$ReadmeQuickStart` (scenario: "README names both runner commands"; PR 3's contracts preserved + new commitlint/Husky mentions added) |
+| `tooling-conventions` — `AGENTS.md` exists | DONE in PR 3 (not in PR 4 scope); verified by PR 3's `AGENTS.md` being 100 lines |
+| `tooling-conventions` — CI / GitHub Actions Deferred | T4.6 + `ToolingConventionsTest$ReadmeQuickStart` ("`bootstrap-android-ci` mentioned") + `ToolingConventionsTest$NoWorkflowsDirectory` ("`.github/workflows/` does NOT exist"); all 3 PASS |
+
+All spec scenarios for PR 4 are covered. The 2 end-to-end commitlint gates (rejection + acceptance of commit messages) are runtime-verified and live alongside the JVM unit tests.
+
+## Risks Surfaced
+
+1. **PR 4 LOC is 405 (1.01× the 400-line budget)** — Reconciled in Deviations #6. The 281 LOC of `ToolingConventionsTest.kt` is the strict TDD hard-gate requirement. Recommend the orchestrator accept the PR as-is; same trade-off as PR 3.
+
+2. **Husky `prepare` script requires `npm install` on first checkout** — The `package.json` `prepare: husky` script wires Husky only after a contributor runs `npm install`. Until then, the `commit-msg` hook is not active and a non-conventional commit could slip through. This is by design (Husky 9.x convention; manual `npm install` is the entry point for Node tooling). Documented in the new "Commit Convention" section of `README.md`. Flagged for the orchestrator's review.
+
+3. **`node_modules` + `package-lock.json` are gitignored but NOT in the design inventory** — Per Deviation #3. Without these gitignore rules, contributors' first `git add .` would commit thousands of lines of vendor code. The gitignore rule is the right hygiene fix; flagged because it's not in the design.
+
+4. **`commitlint.config.js` and `.husky/commit-msg` are platform-specific** — The config is CommonJS (Node-only); the hook is a shell script. CI environments without Node + bash would silently bypass the commit-message gate. Future `bootstrap-android-ci` change should add an `action` that runs `npx commitlint --from=${{ github.event.pull_request.base.sha }} --to=HEAD` on every PR.
+
+5. **`.editorconfig` baseline is editor-side only** — The `.editorconfig` rule only applies when an editor (or a CI tool like `prettier`/`ktlint`) reads it. Out-of-the-box, contributors using IDEs that don't auto-pick editorconfig will still produce inconsistent whitespace. Per the design's Risk Register, detekt/ktlint are deferred to a follow-up change.
+
+## Next Steps (handed back to orchestrator)
+
+1. **Push `feat/scaffold-tooling` to remote** (the orchestrator handles — not in apply scope).
+2. **Open PR 4 on GitHub** with the chained-PR context (PR 4 of 4, stacked-to-main; targets `main`; depends on PR 3 at `94ceef1`).
+3. **Run sdd-verify for PR 4**:
+   - `./gradlew :app:testDebugUnitTest --tests "*ToolingConventionsTest*"` → expect 9/9 PASS
+   - `./gradlew test` → expect 21/21 PASS (17 `:app` + 4 `:domain`)
+   - `./gradlew :app:assembleDebug` → expect 0 (still green from PR 3)
+   - `npx --no-install commitlint --from=main --to=feat/scaffold-tooling` → expect 0 (already verified)
+   - `ls .github/workflows/` → expect ENOENT (already verified)
+   - `git diff main..feat/scaffold-tooling --stat` → expect 8 files / 405 insertions / 7 deletions
+4. **Decide on PR 4 LOC deviation** — Accept the 405 LOC or split. Same recommendation as PR 3: accept.
+5. **After PR 4 merges to main, the `bootstrap-android-scaffold` change is COMPLETE.** Queue `sdd-archive` to sync the delta specs and lock the toolchain in. Then start follow-up changes (`add-room-persistence`, `add-oauth-google-calendar`, etc.) — each as its own SDD change.
+6. **Address Husky install requirement (Risk #2)** — Consider adding a CI workflow in the upcoming `bootstrap-android-ci` change that runs commitlint on every PR (so the gate is enforced even when contributors haven't run `npm install`).
+
+## Relevant Files
+
+- `SyncAlarm/commitlint.config.js` — `extends: ['@commitlint/config-conventional']`
+- `SyncAlarm/package.json` — devDeps (commitlint 19 + husky 9) + `prepare: husky` script
+- `SyncAlarm/.husky/commit-msg` — `npx --no-install commitlint --edit "$1"` (executable, 14 lines)
+- `SyncAlarm/.editorconfig` — root baseline + `[*.{kt,kts,java}]` section + JSON/YAML/JS/Markdown defaults
+- `SyncAlarm/README.md` — extended with "Commit Convention" + "Editor & Whitespace Baseline" sections
+- `SyncAlarm/.gitignore` — added `node_modules/` + `package-lock.json` hygiene rules
+- `SyncAlarm/app/src/test/kotlin/com/syncalarm/app/ToolingConventionsTest.kt` — 9 JVM unit tests, 5 `@Nested` classes, 281 lines
+- `SyncAlarm/openspec/changes/bootstrap-android-scaffold/tasks.md` — PR 1/2/3/4 checkboxes marked `[x]` (hybrid artifact store)

@@ -62,12 +62,12 @@ Chain strategy: stacked-to-main
 
 ## Phase 4: PR 4 — scaffold-tooling
 
-- [ ] 4.1 Write `commitlint.config.js` (extends `@commitlint/config-conventional`)
-- [ ] 4.2 Write `package.json` (devDeps: `@commitlint/cli@^19`, `@commitlint/config-conventional@^19`, `husky@^9`)
-- [ ] 4.3 Write `.husky/commit-msg` (`npx --no-install commitlint --edit "$1"`)
-- [ ] 4.4 Write `.editorconfig` (`[*.{kt,kts,java}]`: 4-space, LF, UTF-8, trim trailing, final newline)
-- [ ] 4.5 Extend `README.md` — quick-start build/test commands + commitlint note + exact-alarm forward-compat deferral
-- [ ] 4.6 Note in `README.md`: CI / GitHub Actions deferred to follow-up change `bootstrap-android-ci`
+- [x] 4.1 Write `commitlint.config.js` (extends `@commitlint/config-conventional`)
+- [x] 4.2 Write `package.json` (devDeps: `@commitlint/cli@^19`, `@commitlint/config-conventional@^19`, `husky@^9`)
+- [x] 4.3 Write `.husky/commit-msg` (`npx --no-install commitlint --edit "$1"`)
+- [x] 4.4 Write `.editorconfig` (`[*.{kt,kts,java}]`: 4-space, LF, UTF-8, trim trailing, final newline)
+- [x] 4.5 Extend `README.md` — quick-start build/test commands + commitlint note + exact-alarm forward-compat deferral
+- [x] 4.6 Note in `README.md`: CI / GitHub Actions deferred to follow-up change `bootstrap-android-ci`
 
 ## Cross-PR Dependencies (stacked-to-main)
 
