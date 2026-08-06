@@ -64,6 +64,14 @@ kotlin {
     jvmToolchain(17)
 }
 
+// JUnit 5 platform for ALL Test tasks in this module (`test`, `testDebugUnitTest`,
+// `testReleaseUnitTest`). Without this, the AGP-managed `Test` tasks default to
+// JUnit 4 discovery and silently report "0 tests" even though the classes compile
+// (same gotcha PR 2 hit on `:domain`).
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 dependencies {
     // --- Clean Architecture wiring ---
     implementation(project(":domain"))
