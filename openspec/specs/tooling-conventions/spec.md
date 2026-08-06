@@ -61,13 +61,70 @@ Project-level contributor conventions — Conventional Commits enforced via comm
 - WHEN `AGENTS.md` is checked
 - THEN the file SHALL exist and SHALL be non-empty
 
-### Requirement: CI / GitHub Actions Deferred
+### Requirement: CI / GitHub Actions Delivered
 
-GitHub Actions / CI SHALL be deferred to a separate change named `bootstrap-android-ci`. This change SHALL NOT introduce `.github/workflows/`.
+GitHub Actions / CI SHALL be delivered by `bootstrap-android-ci`. `.github/workflows/` SHALL contain the build (`.github/workflows/ci.yml`) and security (`.github/workflows/security.yml`) workflows. Trivy SHALL initially run in warning-only mode; a follow-up change `tighten-trivy-gate` SHALL tighten the gate after the first scan is triaged.
 
-#### Scenario: No workflows directory is created
+#### Scenario: Workflows directory is created
 
-- GIVEN the change is archived
+- GIVEN `bootstrap-android-ci` is archived
 - WHEN the repo root is listed
-- THEN `.github/workflows/` SHALL NOT exist
-- AND `.github/` either SHALL NOT exist or SHALL contain only `AGENTS.md`-style non-workflow files
+- THEN `.github/workflows/ci.yml` SHALL exist
+- AND `.github/workflows/security.yml` SHALL exist
+
+> **NOTE**: Trivy initially runs warning-only with `exit-code: "0"` and `ignore-unfixed: true`; the follow-up `tighten-trivy-gate` change will harden the gate after triage.
+
+### Requirement: Branch Naming Convention
+
+Contributors SHALL create branches whose names match one of the allowed prefixes: `feat/*`, `fix/*`, `chore/*`, `docs/*`, `refactor/*`, `test/*`, `perf/*`, `build/*`, or `ci/*`. The prefixes mirror the project's Conventional Commits types enforced by commitlint.
+
+#### Scenario: Developer creates a feature branch
+
+- GIVEN a contributor starts feature work
+- WHEN the branch is created
+- THEN its name SHALL use `feat/<descriptive-name>` (or one of the other allowed prefixes)
+
+#### Scenario: Branch and commit taxonomy align
+
+- GIVEN a branch uses an allowed prefix
+- WHEN its commits are reviewed
+- THEN the prefix SHALL correspond to an allowed Conventional Commit type
+
+### Requirement: Git Worktrees for Concurrent Work and Hotfixes
+
+The repository SHALL document a Git Worktrees protocol for concurrent tasks, reviews, and urgent hotfixes. Additional worktrees SHALL use `../syncalarm-<branch>`. The protocol is documented in `docs/branch-protection.md`.
+
+#### Scenario: Context-switch without losing feature work
+
+- GIVEN a developer has uncommitted work on a `feat/*` branch
+- WHEN an urgent hotfix requires a context switch
+- THEN they SHALL create `../syncalarm-<branch>` and check out `main` there
+- AND the original worktree SHALL preserve the in-progress changes
+
+#### Scenario: Hotfix and feature proceed in parallel
+
+- GIVEN feature work is in progress
+- WHEN a hotfix is developed in another worktree
+- THEN both branches SHALL remain editable without `git stash` overhead
+
+#### Scenario: Parallel reviews remain independent
+
+- GIVEN multiple features each use a worktree
+- WHEN their pull requests are reviewed
+- THEN review and CI SHALL run independently for each branch
+
+### Requirement: Main Branch Requires Pull Requests and Green CI
+
+The `main` branch SHALL accept changes only through pull requests with green required CI checks. Branch protection SHALL block direct pushes. The required status checks are the display names of the three jobs: `Build & Unit Tests` (from `ci.yml`), `CodeQL (Kotlin/Java)` (from `security.yml`), and `Trivy Filesystem Scan` (from `security.yml`).
+
+#### Scenario: Direct push is blocked
+
+- GIVEN branch protection applies to `main`
+- WHEN a contributor pushes directly to `main`
+- THEN GitHub SHALL reject the push
+
+#### Scenario: Failed CI blocks merge
+
+- GIVEN a pull request targets `main`
+- WHEN `Build & Unit Tests`, `CodeQL (Kotlin/Java)`, or `Trivy Filesystem Scan` is not green
+- THEN GitHub SHALL block merge
