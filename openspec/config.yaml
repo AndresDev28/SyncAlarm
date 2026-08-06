@@ -47,11 +47,11 @@ rules:
         when there is no clear English equivalent (alarm, calendar, rule,
         offset all have standard English terms).
     tdd: true
-    tdd_command: "./gradlew :domain:test"
+    tdd_command: "./gradlew test"
     test_command: "./gradlew test"
   verify:
-    test_command: "./gradlew :domain:test"
-    build_command: "./gradlew :domain:test"
+    test_command: "./gradlew test"
+    build_command: "./gradlew :app:assembleDebug"
     coverage_threshold: 0
   archive:
     - Warn before merging any delta that removes a SCHEDULE_EXACT_ALARM or

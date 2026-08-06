@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Material 3 theme — the platform-launch theme. The Composable tree
+      rendered by `MainActivity` wraps its content in `MaterialTheme { ... }`
+      from `androidx.compose.material3.MaterialTheme`, so this XML theme is
+      only the entry-point the Activity inherits before Compose takes over
+      (status-bar tinting, edge-to-edge defaults, etc.).
+
+      Material 3 (not Material 2). The `Theme.Material3.DayNight.NoActionBar`
+      parent surfaces the Material 3 color tokens without a legacy M2 action
+      bar — the Compose hierarchy draws its own top-app-bar when one is needed.
+    -->
+    <style name="Theme.SyncAlarm" parent="Theme.Material3.DayNight.NoActionBar" />
+</resources>
