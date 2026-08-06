@@ -31,7 +31,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SyncAlarm"
 
-// Module includes — all three modules declared for PR 3 (scaffold-app).
-include(":domain")   // PR 2 (scaffold-domain): kotlin("jvm"), zero android.* imports
-include(":app")      // PR 3 (scaffold-app): com.android.application + Hilt + Compose
-include(":data")     // PR 3 (scaffold-app): com.android.library + KSP + project(":domain")
+// Module includes — exactly three modules per Clean Architecture (app → data → domain).
+// Matches `module-boundaries` spec scenario "Settings file lists all three modules".
+include(":app", ":domain", ":data")

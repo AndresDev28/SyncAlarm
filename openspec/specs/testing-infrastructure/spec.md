@@ -16,16 +16,16 @@ Wire JUnit 5 + MockK + Turbine + AssertJ in `:domain` so the test stack is prova
 - WHEN the `dependencies {}` block is inspected
 - THEN `testImplementation` entries SHALL exist for `org.junit.jupiter:junit-jupiter`, `io.mockk:mockk`, `app.cash.turbine:turbine`, and `org.assertj:assertj-core`
 
-### Requirement: `:domain` Sanity Test Passes
+### Requirement: `:domain` Sanity Tests Pass
 
-`:domain` SHALL contain a `SanityTest` that uses JUnit 5 + AssertJ and passes when `./gradlew :domain:test` runs.
+`:domain` SHALL contain four framework-specific sanity tests (one per test framework in the stack) that collectively prove JUnit 5 + MockK + Turbine + AssertJ are all wired and functional. Each sanity test SHALL pass when `./gradlew :domain:test` runs.
 
-#### Scenario: SanityTest is discovered and passes
+#### Scenario: Four framework sanity tests are discovered and pass
 
-- GIVEN `domain/src/test/kotlin/com/syncalarm/domain/SanityTest.kt` is present
+- GIVEN `domain/src/test/kotlin/com/syncalarm/domain/{JupiterSanityTest,MockKSanityTest,TurbineSanityTest,AssertJSanityTest}.kt` are present
 - WHEN `./gradlew :domain:test` runs
-- THEN at least one `@Test`-annotated method SHALL be discovered
-- AND its assertion SHALL report `PASSED`
+- THEN at least 4 `@Test`-annotated methods SHALL be discovered (one per framework)
+- AND each assertion SHALL report `PASSED`
 - AND the task SHALL exit 0
 
 ### Requirement: MockK is Provably Functional in `:domain`

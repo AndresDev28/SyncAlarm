@@ -61,6 +61,7 @@ The system SHALL render UI through a Material 3 theme; the smoke screen SHALL di
 - WHEN the Compose tree composes
 - THEN a `Text("SyncAlarm")` node SHALL be present
 - AND it SHALL be discoverable via `composeTestRule.onNodeWithText("SyncAlarm")` once Compose test rule is wired (see `testing-infrastructure`)
+- AND runtime verification via `connectedAndroidTest` is deferred to the follow-up change `bootstrap-android-ci` (the local dev environment has no Android emulator; the connectedAndroidTest task requires a device target which lands in `bootstrap-android-ci`)
 
 #### Scenario: Material 3 is the active theme
 
