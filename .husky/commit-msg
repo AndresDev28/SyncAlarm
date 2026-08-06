@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# SyncAlarm commit-msg hook — invokes commitlint on the staged message.
+# `--no-install` prevents npx from silently downloading a different commitlint
+# version when the developer has the package installed locally via
+# `npm install`. The `--edit` flag tells commitlint to lint the message file
+# passed by git as the first argument.
+#
+# Exit codes:
+#   0 — commit message is conventional; commit proceeds.
+#   non-zero — commit message violates @commitlint/config-conventional rules;
+#              commit is aborted and the rule violation is printed.
+npx --no-install commitlint --edit "$1"
