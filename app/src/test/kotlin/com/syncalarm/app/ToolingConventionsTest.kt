@@ -171,22 +171,28 @@ class ToolingConventionsTest {
 
         /**
          * Extracts the `[*.{kt,kts,java}]` section body from the editorconfig.
-         * The section begins at the matching header and ends at the next `[`
-         * header (or end-of-file). Returns the section including the header
-         * for readable assertion failure messages.
+         * The header must appear at the start of a line (not inside a comment
+         * that merely references the section name); the body ends at the next
+         * `[` header or end-of-file.
          */
         private fun extractKtKtsJavaSection(text: String): String {
-            val headerRegex = Regex("""\[\*\.\{kt,kts,java\}\]""")
+            // Anchor on a line start (`^` with MULTILINE) so the regex does not
+            // match a reference to the section inside a `# comment`.
+            val headerRegex = Regex(
+                """(?m)^\[\*\.\{kt,kts,java\}\][\t ]*$""",
+            )
             val headerMatch = headerRegex.find(text)
                 ?: error(
                     ".editorconfig is missing the [*.{kt,kts,java}] section",
                 )
-            val tail = text.substring(headerMatch.range.last + 1)
-            val nextHeaderIdx = tail.indexOf('[')
+            val tailStart = headerMatch.range.last + 1
+            val tail = text.substring(tailStart)
+            val nextHeaderIdx = tail.indexOf("\n[")
             return if (nextHeaderIdx == -1) {
                 headerMatch.value + tail
             } else {
-                headerMatch.value + tail.substring(0, nextHeaderIdx)
+                val sectionEnd = nextHeaderIdx + 1
+                text.substring(headerMatch.range.first, tailStart + sectionEnd)
             }
         }
     }
