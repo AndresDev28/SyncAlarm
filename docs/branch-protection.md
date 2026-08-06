@@ -18,15 +18,17 @@ GitHub repository settings (Settings → Branches → Branch protection rules).
 
 ### Required status checks
 
-The following job names must be green on a PR before `main` can be
-merged. Configure these in the repository's branch protection rule for
-`main`:
+The following check names (the `name:` of each job, **not** the job key)
+must be green on a PR before `main` can be merged. Configure these in
+the repository's branch protection rule for `main`. GitHub matches the
+`name:` of the last completed run, so the listed names below are the
+canonical display names emitted by the workflows.
 
 | Check name | Source workflow | Purpose |
 |---|---|---|
-| `build-and-test` | `CI` | `./gradlew test` + `:app:assembleDebug` + `:data:assembleDebug` |
-| `codeql` | `Security` | CodeQL Java/Kotlin analysis |
-| `trivy-fs-scan` | `Security` | Trivy filesystem HIGH/CRITICAL scan |
+| `Build & Unit Tests` | `CI` | `./gradlew test` + `:app:assembleDebug` + `:data:assembleDebug` |
+| `CodeQL (Kotlin/Java)` | `Security` | CodeQL Java/Kotlin analysis |
+| `Trivy Filesystem Scan` | `Security` | Trivy filesystem HIGH/CRITICAL scan (push + weekly, skipped on PR) |
 
 ## Branch naming convention
 
