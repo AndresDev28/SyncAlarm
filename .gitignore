@@ -29,3 +29,7 @@ local.properties
 Thumbs.db
 *.swp
 *~
+
+# --- Node / npm (commitlint + Husky toolchain) ---
+node_modules/
+package-lock.json
