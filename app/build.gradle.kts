@@ -81,6 +81,12 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Platform Material 3 components (View-system) — supplies the
+    // `Theme.Material3.DayNight.NoActionBar` parent referenced from
+    // `themes.xml`. The Compose tree renders Material 3 itself via
+    // `MaterialTheme`; this dependency is only for the platform launch theme.
+    implementation(libs.google.material)
+
     // The official `material-icons-core` is intentionally NOT pulled in: this
     // scaffold ships only a `Text("SyncAlarm")` smoke screen. Icons land alongside
     // the first real UI change.
