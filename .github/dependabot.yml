@@ -1,0 +1,26 @@
+version: 2
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      prefix-development: "ci"
+      include: "scope"
+
+# NOTE: `gradle` ecosystem is deferred to a follow-up change. Auto-PR-ing
+# Gradle version bumps before libs.versions.toml stabilizes will create
+# noise. Revisit when the version catalog is stable enough.

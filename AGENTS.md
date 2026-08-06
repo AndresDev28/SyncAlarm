@@ -93,8 +93,6 @@ multi-agent rules already capture that constraint.
 * AlarmManager scheduling — `add-alarm-scheduler`
 * WorkManager periodic calendar scans — `add-workmanager-calendar-scan`
 * Rule engine (offset, conflict resolution) — `add-rule-engine`
-* CI / GitHub Actions — `bootstrap-android-ci`
-
 These are tracked in `openspec/changes/` and the in-flight `tasks.md` files.
 Do not start them implicitly; each lands as its own SDD change with its own
 proposal/spec/design/tasks artifacts.
