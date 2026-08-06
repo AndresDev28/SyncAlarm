@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build & Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          # Installs cmdline-tools + SDK root. platforms;android-35 and
+          # build-tools;35.0.0 are installed via sdkmanager below.
+          # Pin to a specific version tag (NOT @v4 floating ref) for supply-chain.
+          # Reference: https://github.com/android-actions/setup-android
+
+      - name: Install SDK platforms & build-tools
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        # Auto-caches Gradle home + config-cache.
+
+      - name: Run Unit Tests
+        run: ./gradlew test --continue
+
+      - name: Build :app debug APK
+        run: ./gradlew :app:assembleDebug
+
+      - name: Build :data debug AAR
+        run: ./gradlew :data:assembleDebug
+
+      # Forward-compat placeholders:
+      # 1. Emulator: `add-alarm-permissions` adds a new `instrumented-tests` job
+      #    using reactivecircus/android-emulator-runner@v2. Reuse the same
+      #    checkout / JDK / Android SDK setup pattern here.
+      #    See openspec/changes/add-alarm-permissions/proposal.md.
+      # 2. Trivy gate: follow-up `tighten-trivy-gate` flips
+      #    security.yml's `exit-code: "0"` → `"1"` after first triage.
+      #    No CI changes needed here — the gate lives in security.yml.
