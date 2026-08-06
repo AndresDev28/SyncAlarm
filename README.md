@@ -77,7 +77,9 @@ The dependency direction is `app → domain ← data`, `app → data`. `app` and
   + the README extension with the canonical commit message format.
 * **Follow-up changes**: `add-room-persistence`, `add-oauth-google-calendar`,
   `add-alarm-scheduler`, `add-workmanager-calendar-scan`, `add-rule-engine`.
-* **CI / GitHub Actions**: deferred to `bootstrap-android-ci`.
+* **CI / GitHub Actions**: delivered by `bootstrap-android-ci`
+  (`.github/workflows/ci.yml`, `.github/workflows/security.yml`,
+  `.github/dependabot.yml`; see `docs/branch-protection.md` for the contract).
 
 ## Forward-Compat Notes
 

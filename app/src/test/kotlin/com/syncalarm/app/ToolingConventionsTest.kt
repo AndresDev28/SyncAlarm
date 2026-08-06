@@ -234,18 +234,18 @@ class ToolingConventionsTest {
         }
 
         @Test
-        fun `README defers CI to bootstrap-android-ci follow-up change`() {
+        fun `README documents CI delivered by bootstrap-android-ci`() {
             val readme = readReadme()
 
-            // T4.6 — note in README that CI is deferred to a follow-up change
-            // named `bootstrap-android-ci`. The spec scenario "CI / GitHub
-            // Actions Deferred" requires that `.github/workflows/` is NOT
-            // created, and the README must state the deferral explicitly so
-            // contributors know not to introduce workflows here.
+            // T4.6 — note in README that CI was delivered by
+            // `bootstrap-android-ci`. As of that change the spec scenario
+            // "CI / GitHub Actions Delivered" requires `.github/workflows/`
+            // to exist, and the README must state the delivery explicitly so
+            // contributors know the CI infrastructure is in place.
             assertThat(readme)
                 .describedAs(
                     "README must reference 'bootstrap-android-ci' as the" +
-                        " follow-up change for CI",
+                        " change that delivered CI",
                 )
                 .contains("bootstrap-android-ci")
         }
@@ -260,22 +260,39 @@ class ToolingConventionsTest {
     }
 
     @Nested
-    @DisplayName("No .github/workflows directory is created (CI deferred)")
-    inner class NoWorkflowsDirectory {
+    @DisplayName(".github/workflows directory is bootstrapped (CI delivered)")
+    inner class WorkflowsDirectoryExists {
 
         @Test
-        fun `github workflows directory does not exist at repo root`() {
-            // The spec scenario "No workflows directory is created" is the
-            // negative-contract gate for "CI / GitHub Actions Deferred". If
-            // this test ever fails, a future change accidentally shipped CI
-            // scaffolding inside this scaffold change — that's a spec drift.
-            val workflows = File("../.github/workflows")
-            assertThat(workflows.exists())
+        fun `github workflows directory exists at repo root`() {
+            // The spec scenario "Workflows directory is created" is the
+            // positive-contract gate for "CI / GitHub Actions Delivered" (the
+            // MODIFIED version of the previous "CI / GitHub Actions Deferred"
+            // requirement). If this test ever fails, a future change
+            // accidentally removed the CI scaffolding — that's a spec drift.
+            val workflowsDir = File("../.github/workflows")
+            assertThat(workflowsDir.exists())
                 .describedAs(
-                    ".github/workflows/ must NOT exist; CI is deferred to" +
-                        " the follow-up change 'bootstrap-android-ci'",
+                    ".github/workflows/ MUST exist; CI is delivered by" +
+                        " the change 'bootstrap-android-ci'",
                 )
-                .isFalse()
+                .isTrue()
+        }
+
+        @Test
+        fun `expected workflow files exist`() {
+            // Companion test: the spec requires `.github/workflows/` to
+            // contain both the build and the security workflows.
+            val workflowsDir = File("../.github/workflows")
+            assertThat(workflowsDir.isDirectory)
+                .describedAs(".github/workflows/ MUST be a directory")
+                .isTrue()
+            assertThat(File(workflowsDir, "ci.yml").exists())
+                .describedAs("ci.yml MUST exist per build-system spec")
+                .isTrue()
+            assertThat(File(workflowsDir, "security.yml").exists())
+                .describedAs("security.yml MUST exist per build-system spec")
+                .isTrue()
         }
     }
 }
