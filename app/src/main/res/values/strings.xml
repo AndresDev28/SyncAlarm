@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      App label. Kept in `strings.xml` instead of `strings.properties` so the
+      value is discoverable via `getString(R.string.app_name)` (Compose previews,
+      Compose UI tests, and the Android home-screen launcher all read this).
+    -->
+    <string name="app_name">SyncAlarm</string>
+</resources>

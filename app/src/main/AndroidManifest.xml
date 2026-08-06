@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SyncAlarm AndroidManifest — bootstrap-android-scaffold, PR 3 (scaffold-app).
+
+  The five <uses-permission> entries below are the contract the app establishes
+  with the OS at install time. The runtime flow that ACTUALLY exercises them
+  (e.g. `ActivityCompat.requestPermissions(POST_NOTIFICATIONS)` on API 33+, or
+  the `SCHEDULE_EXACT_ALARM` settings-screen hop on API 31+) lands in a follow-up
+  change named `alarm-permission-flow`. This manifest only DECLARES them.
+
+  `android:name=".SyncAlarmApp"` registers the Hilt application class. The
+  generated `Hilt_SyncAlarmApp` (built by Hilt's KSP processor) is the actual
+  class loaded by the OS; Hilt's Gradle plugin swaps it in via the
+  `transformAndroidLibraries` API so the manifest's `android:name` still points
+  at the user-authored class.
+
+  `MainActivity` is the LAUNCHER entry point. The `MAIN` + `LAUNCHER` filter
+  pair is what puts the app on the device's home screen.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <application
+        android:name=".SyncAlarmApp"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SyncAlarm">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SyncAlarm">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
