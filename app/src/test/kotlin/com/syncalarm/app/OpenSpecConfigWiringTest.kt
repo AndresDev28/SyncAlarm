@@ -55,7 +55,7 @@ class OpenSpecConfigWiringTest {
     }
 
     private fun readConfig(): String {
-        val configFile = File("../../openspec/config.yaml")
+        val configFile = File("../openspec/config.yaml")
         check(configFile.exists()) {
             "openspec/config.yaml not found at ${configFile.absolutePath} — " +
                 "module working directory is expected to be the :app module root."
